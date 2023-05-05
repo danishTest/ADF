@@ -1,0 +1,165 @@
+{
+	"name": "day3exampl1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "zomato",
+						"type": "DatasetReference"
+					},
+					"name": "zomato"
+				},
+				{
+					"dataset": {
+						"referenceName": "country_code",
+						"type": "DatasetReference"
+					},
+					"name": "countrycode"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable4",
+						"type": "DatasetReference"
+					},
+					"name": "target"
+				}
+			],
+			"transformations": [
+				{
+					"name": "join1"
+				},
+				{
+					"name": "selectallcolumns"
+				},
+				{
+					"name": "castvotetoint"
+				},
+				{
+					"name": "derivedVoteFromVote"
+				},
+				{
+					"name": "rankonVotes"
+				},
+				{
+					"name": "selectforincludingrank"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {Restaurant ID} as string,",
+				"          {Restaurant Name} as string,",
+				"          cc as string,",
+				"          City as string,",
+				"          Address as string,",
+				"          Locality as string,",
+				"          {Locality Verbose} as string,",
+				"          Longitude as string,",
+				"          Latitude as string,",
+				"          Cuisines as string,",
+				"          {Average Cost for two} as string,",
+				"          Currency as string,",
+				"          {Has Table booking} as string,",
+				"          {Has Online delivery} as string,",
+				"          {Is delivering now} as string,",
+				"          {Switch to order menu} as string,",
+				"          {Price range} as string,",
+				"          {Aggregate rating} as string,",
+				"          {Rating color} as string,",
+				"          {Rating text} as string,",
+				"          Votes as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> zomato",
+				"source(output(",
+				"          cc as string,",
+				"          Country as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> countrycode",
+				"zomato, countrycode join(zomato@cc == countrycode@cc,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 select(mapColumn(",
+				"          {Restaurant ID},",
+				"          {Restaurant Name},",
+				"          cc = zomato@cc,",
+				"          City,",
+				"          Address,",
+				"          Locality,",
+				"          {Locality Verbose},",
+				"          Longitude,",
+				"          Latitude,",
+				"          Cuisines,",
+				"          {Average Cost for two},",
+				"          Currency,",
+				"          {Has Table booking},",
+				"          {Has Online delivery},",
+				"          {Is delivering now},",
+				"          {Switch to order menu},",
+				"          {Price range},",
+				"          {Aggregate rating},",
+				"          {Rating color},",
+				"          {Rating text},",
+				"          Votes,",
+				"          cc = countrycode@cc,",
+				"          Country",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectallcolumns",
+				"selectallcolumns cast(output(",
+				"          Votes as integer",
+				"     ),",
+				"     errors: true) ~> castvotetoint",
+				"castvotetoint derive(Vote1 = coalesce(Votes,0)) ~> derivedVoteFromVote",
+				"derivedVoteFromVote rank(asc(Vote1, true),",
+				"     output(rank1 as long)) ~> rankonVotes",
+				"rankonVotes select(mapColumn(",
+				"          {Restaurant ID},",
+				"          {Restaurant Name},",
+				"          cc,",
+				"          City,",
+				"          Address,",
+				"          Locality,",
+				"          {Locality Verbose},",
+				"          Longitude,",
+				"          Latitude,",
+				"          Cuisines,",
+				"          {Average Cost for two},",
+				"          Currency,",
+				"          {Has Table booking},",
+				"          {Has Online delivery},",
+				"          {Is delivering now},",
+				"          {Switch to order menu},",
+				"          {Price range},",
+				"          {Aggregate rating},",
+				"          {Rating color},",
+				"          {Rating text},",
+				"          Votes,",
+				"          Country,",
+				"          Vote1,",
+				"          rank1",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectforincludingrank",
+				"selectforincludingrank sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> target"
+			]
+		}
+	}
+}

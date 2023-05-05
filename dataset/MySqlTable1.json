@@ -1,0 +1,19 @@
+{
+	"name": "MySqlTable1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "MySql",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Example3(mysqlOnPremise)"
+		},
+		"annotations": [],
+		"type": "MySqlTable",
+		"schema": [],
+		"typeProperties": {
+			"tableName": "`amazon`"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

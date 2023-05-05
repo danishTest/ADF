@@ -1,0 +1,23 @@
+{
+	"name": "Json2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "linkedservice_adf",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Example3(mysqlOnPremise)"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "examle3onpremise.json",
+				"fileSystem": "targetcontainerexample2"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

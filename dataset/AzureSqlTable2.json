@@ -1,0 +1,53 @@
+{
+	"name": "AzureSqlTable2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabaseInputExample2",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ExampleJoinsDay2"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "age",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "sex",
+				"type": "varchar"
+			},
+			{
+				"name": "bmi",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "children",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "smoker",
+				"type": "varchar"
+			},
+			{
+				"name": "region",
+				"type": "varchar"
+			},
+			{
+				"name": "charges",
+				"type": "float",
+				"precision": 15
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "insurance_data"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
